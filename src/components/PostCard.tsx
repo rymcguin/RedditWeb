@@ -48,13 +48,13 @@ export default function PostCard({post:{identifier, slug, title, body, subname, 
             <div className="w-full p-2 text-black">
             <div className="flex items-center">
                 <Link href={`/r/${subname}`}>
-                <Fragment>
                     <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
                     className="w-6 h-6 mr-1 rounded-full cursor-pointer"/>
+                </Link>
+                <Link href={`/r/${subname}`}>
                     <a className="text-xs font-bold cursor-pointer hover:underline">
-                    /r/{subname}
+                        /r/{subname}
                     </a>
-                </Fragment>
                 </Link>
                 <p className="text-xs text-gray-500">
                 <span className="mx-1">•</span> 
