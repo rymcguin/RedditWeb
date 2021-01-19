@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import Axios from 'axios'
@@ -14,7 +14,7 @@ export default function Home() {
   const {data:posts} = useSWR('/posts')
 
   return (
-    <div className="pt-12">
+    <Fragment>
       <Head>  
         <title>Readit: The front page of the internet</title> 
       </Head>
@@ -27,7 +27,7 @@ export default function Home() {
         </div> 
         {/* Side Bar */}
       </div>
-    </div>
+    </Fragment>
   )
 } 
 // SERVER SIDE RENDERING
