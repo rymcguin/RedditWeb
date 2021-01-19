@@ -5,7 +5,7 @@ import {useAuthState, useAuthDispatch} from '../context/auth'
 import RedditLogo from '../images/reddit.svg'
 
 const Navbar: React.FC = () => {
-    const {authenticated} = useAuthState()
+    const {authenticated, loading} = useAuthState()
     const dispatch = useAuthDispatch()
 
     const logout = () => {
@@ -38,7 +38,7 @@ const Navbar: React.FC = () => {
         </div>
         {/* Auth Buttons */}
         <div className="flex">
-          {authenticated ? (
+          {!loading && (authenticated ? (
             <button className ="py-1 mr-4 leading-4 w-28 hollow blue button"
             onClick={logout}>Logout</button>
           ):(
@@ -50,7 +50,7 @@ const Navbar: React.FC = () => {
             <a className="py-1 leading-4 w-28 blue button">Sign up</a>
           </Link>
           </Fragment>
-          )}
+          )) }
           
         </div>
         
