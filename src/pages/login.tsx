@@ -4,22 +4,27 @@ import Link from 'next/link'
 import Axios from 'axios'
 import {useRouter} from 'next/router'
 
+import {useAuthDispatch} from '../context/auth'
 import InputGroup from '../components/InputGroup'
 
 export default function Login() {
   const [username, setUsername ] = useState('')
   const [password, setPassword ] = useState('')
   const [errors, setErrors ] = useState<any>({})
+  const dispatch = useAuthDispatch()
 
   const router = useRouter()
 
   const submitForm = async(event: FormEvent)=>{
     event.preventDefault()
     try{
-      await Axios.post('/auth/login', { 
+      const res = await Axios.post('/auth/login', { 
           username, 
           password,
         })
+
+      dispatch('LOGIN', res.data)
+      
       router.push('/')
     }catch(err){
         setErrors(err.response.data)

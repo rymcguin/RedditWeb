@@ -13,3 +13,10 @@ export interface Post{
     // Virtual Fields
     url: string
 }
+
+export interface User{
+    username: string
+    email: string
+    createdAt: string
+    updatedAt: string
+}

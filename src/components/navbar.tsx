@@ -1,9 +1,23 @@
+import Axios from 'axios'
 import Link from 'next/link'
+import {Fragment} from 'react'
+import {useAuthState, useAuthDispatch} from '../context/auth'
 import RedditLogo from '../images/reddit.svg'
 
 const Navbar: React.FC = () => {
-    return(
-    <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-center h-12 px-5 bg-white">
+    const {authenticated} = useAuthState()
+    const dispatch = useAuthDispatch()
+
+    const logout = () => {
+      Axios.get('/auth/logout')
+        .then(()=>{
+          dispatch('LOGOUT') 
+          window.location.reload
+        })
+        .catch(err => console.log(err))
+    }
+
+    return<div className="fixed inset-x-0 top-0 z-10 flex items-center justify-center h-12 px-5 bg-white">
         {/* Logo and Title */}
         <div className="flex items-center">
           <Link href="/">
@@ -24,16 +38,24 @@ const Navbar: React.FC = () => {
         </div>
         {/* Auth Buttons */}
         <div className="flex">
+          {authenticated ? (
+            <button className ="py-1 mr-4 leading-4 w-28 hollow blue button"
+            onClick={logout}>Logout</button>
+          ):(
+          <Fragment>
           <Link href="/login">
             <a className="py-1 mr-4 leading-4 w-28 hollow blue button">Login</a>
           </Link>
           <Link href="/register">
             <a className="py-1 leading-4 w-28 blue button">Sign up</a>
           </Link>
+          </Fragment>
+          )}
+          
         </div>
         
       </div>
-    )
+    
 }
 
 export default Navbar
