@@ -4,23 +4,26 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import Axios from 'axios'
 import React, { Fragment } from 'react'
 import classNames from 'classnames'
+import {useRouter} from 'next/router'
 
+import {useAuthState} from '../context/auth'
 import { Post } from '../types'
+import ActionButton from './ActionButton'
 
 dayjs.extend(relativeTime)
 
-const ActionButton = ({children}) => {
-    return <div className="px-1 py-1 mr-2 text-xs text-gray-400 rounded cursor-pointer hover:bg-gray-200">
-        {children}
-    </div>
-}
+
 
 interface PostCardProps{
     post: Post
 }
 
 export default function PostCard({post:{identifier, slug, title, body, subname, username, userVote, commentCount, voteScore, createdAt, url}}: PostCardProps){
-    const vote = async(value)=>{
+    const router = useRouter()
+    const {authenticated} = useAuthState()
+    const vote = async(value: number)=>{
+        if(!authenticated) router.push('/login')
+        if(value === userVote) value = 0
         try {
             const res = await Axios.post('/misc/vote',{
                 identifier,

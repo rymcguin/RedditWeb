@@ -5,6 +5,7 @@ export interface Post{
     slug:string
     subname:string
     username:string
+    sub?:Sub
     createdAt:string
     updatedAt:string
     voteScore?:number
@@ -33,4 +34,5 @@ export interface Sub{
     posts: Post[]
     imageUrl: string
     bannerUrl: string
+    postCount?:number
 }

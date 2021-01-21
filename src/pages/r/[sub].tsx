@@ -9,6 +9,7 @@ import classNames from 'classnames'
 import PostCard from "../../components/PostCard"
 import {Sub} from '../../types'
 import {useAuthState} from '../../context/auth'
+import Sidebar from '../../components/Sidebar'
 
 export default function SubPage (){
     // Local State
@@ -112,6 +113,7 @@ export default function SubPage (){
                         {/* Posts and Sidebar */}
                         <div className="container flex pt-5">
                             <div className="w-160">{postsMarkup}</div>
+                            <Sidebar sub={sub}/>
                         </div>
                     </Fragment>
                 )}

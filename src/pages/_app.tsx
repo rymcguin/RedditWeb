@@ -20,7 +20,7 @@ const fetcher = async(url: string) => {
     return res.data
   } catch (err) {
     console.log(err)
-    throw err.respons.data
+    throw err.response.data
   }
 }
 
