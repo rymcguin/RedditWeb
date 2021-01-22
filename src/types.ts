@@ -11,7 +11,7 @@ export interface Post{
     voteScore?:number
     commentCount?:number
     userVote?:number
-    // Virtual Fields
+    // Virtuals
     url: string
 }
 
@@ -32,7 +32,19 @@ export interface Sub{
     bannerUrn: string
     username: string
     posts: Post[]
+    // Virtuals
     imageUrl: string
     bannerUrl: string
     postCount?:number
+}
+
+export interface Comment{
+    identifier: string
+    body: string
+    username: string
+    createdAt: string
+    updatedAt: string
+    // Virtuals
+    userVote: number
+    voteScore: nummber
 }

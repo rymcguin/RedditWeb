@@ -37,7 +37,7 @@ export default function PostCard({post:{identifier, slug, title, body, subname, 
     }
     return (
         <div key={identifier} className="flex mb-4 bg-white rounded">
-            <div className="w-10 py-3 text-center bg-gray-200 rounded-l">
+            <div className="flex-shrink-0 w-10 py-3 text-center bg-gray-200 rounded-l">
             {/* Upvote */}
             <div className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-blue-600" onClick ={()=> vote(1)}>
                 <i className={classNames("icon-arrow-up",{'text-blue-600': userVote === 1})}></i>
