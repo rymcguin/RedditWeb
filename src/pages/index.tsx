@@ -6,14 +6,14 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import useSWR from 'swr'
 
-import {Sub} from '../types'
+import {Post, Sub} from '../types'
 import PostCard from '../components/PostCard'
 
 dayjs.extend(relativeTime)
 
 export default function Home() {
-  const {data:posts} = useSWR('/posts')
-  const {data: topSubs} = useSWR('/misc/top-subs')
+  const {data:posts} = useSWR<Post[]>('/posts')
+  const {data: topSubs} = useSWR<Sub[]>('/misc/top-subs')
 
   return (
     <Fragment>
@@ -36,11 +36,13 @@ export default function Home() {
               </p>
             </div>
             <div>
-              {topSubs?.map((sub: Sub)=>(
+              {topSubs?.map((sub)=>(
                 <div key={sub.name} className="flex items-center px-4 py-2 text-xs border-b">
                   
                   <Link href={`/r/${sub.name}`}>
-                    <Image  className="rounded-full cursor-pointer"src={sub.imageUrl} alt="Sub" width={24} height={24} objectFit="cover" objectPosition="center"/>
+                    <a>
+                      <Image  className="rounded-full cursor-pointer"src={sub.imageUrl} alt="Sub" width={24} height={24} objectFit="cover" objectPosition="center"/>
+                    </a>
                   </Link>
                   
                   <Link href={`/r/${sub.name}`}>

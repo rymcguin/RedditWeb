@@ -5,7 +5,8 @@ import Head from 'next/head'
 
 import SideBar from '../../../components/Sidebar'
 import {Sub} from '../../../types'
-import axios from 'axios'
+import Axios from 'axios'
+import { GetServerSideProps } from 'next'
 
 
 
@@ -25,7 +26,7 @@ export default function submit(){
         if(title.trim() === '') return
 
         try {
-            const {data:post} = await axios.post('/posts',{title:title.trim(), body, sub:sub.name} )
+            const {data:post} = await Axios.post('/posts',{title:title.trim(), body, sub:sub.name} )
 
             router.push(`/r/${sub.name}/${post.identifier}/${post.slug}`)
         } catch (err) {
@@ -58,4 +59,17 @@ export default function submit(){
             {sub && (<SideBar sub={sub}/>)}
         </div>
     )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({req, res}) => {
+    try {
+        const cookie = req.headers.cookie
+        if(!cookie) throw new Error('Missing auth token cooke')
+
+        await Axios.get('/auth/me', {headers: {cookie}})
+
+        return {props: {}}
+    } catch (err) {
+        res.writeHead(307, {Location:'/login'}).end()
+    }
 }
