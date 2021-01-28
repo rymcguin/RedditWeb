@@ -8,12 +8,14 @@ import useSWR from 'swr'
 
 import {Post, Sub} from '../types'
 import PostCard from '../components/PostCard'
+import { useAuthState } from '../context/auth'
 
 dayjs.extend(relativeTime)
 
 export default function Home() {
   const {data:posts} = useSWR<Post[]>('/posts')
   const {data: topSubs} = useSWR<Sub[]>('/misc/top-subs')
+  const {authenticated} = useAuthState()
 
   return (
     <Fragment>
@@ -22,13 +24,13 @@ export default function Home() {
       </Head>
       <div className="container flex pt-4">
         {/* Post Feed */}
-        <div className="w-160">
+        <div className="w-full px-4 md:w-160 md:p-0">
           {posts?.map((post) => (
             <PostCard post={post} key={post.identifier}/>
           ))}
         </div> 
         {/* Side Bar */}
-        <div className="ml-6 w-80">
+        <div className="hidden ml-6 md:block w-80">
           <div className="bg-white rounded">
             <div className="p-4 border-b-2">
               <p className="text-lg font-semibold text-center">
@@ -54,6 +56,14 @@ export default function Home() {
                 </div>
               ))}
             </div>
+            {authenticated && (
+            <div className="p-4 border-t-2">
+              <Link href="/subs/create">
+                <a className= "w-full px-2 py-1 blue button"> Create Community</a>
+              </Link>
+            </div>
+            )}
+            
           </div>
         </div>
       </div>
