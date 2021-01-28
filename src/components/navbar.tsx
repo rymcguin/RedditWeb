@@ -5,8 +5,7 @@ import {Fragment, useEffect, useState} from 'react'
 
 import {Sub} from '../types'
 import {useAuthState, useAuthDispatch} from '../context/auth'
-import RedditLogo from '../images/reddit.svg'
-import { Router } from 'express'
+import RedditLogo from '../../public/reddit.svg'
 import { useRouter } from 'next/router'
 
 const Navbar: React.FC = () => {

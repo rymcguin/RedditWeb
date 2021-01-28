@@ -16,11 +16,15 @@ dayjs.extend(relativeTime)
 
 interface PostCardProps{
     post: Post
+    revalidate : Function
 }
 
-export default function PostCard({post:{identifier, slug, title, body, subname, username, userVote, commentCount, voteScore, createdAt, url}}: PostCardProps){
+export default function PostCard({post:{identifier, slug, title, body, subname, username, userVote, commentCount, voteScore, createdAt, url, sub}, revalidate}: PostCardProps){
+    
     const router = useRouter()
     const {authenticated} = useAuthState()
+
+    const isInSubPage = router.pathname === '/r/[sub]'
     const vote = async(value: number)=>{
         if(!authenticated) router.push('/login')
         if(value === userVote) value = 0
@@ -30,13 +34,14 @@ export default function PostCard({post:{identifier, slug, title, body, subname, 
                 slug,
                 value
             })
+            if(revalidate) revalidate()
             console.log(res)
         } catch (err) {
             console.log(err)
         }
     }
     return (
-        <div key={identifier} className="flex mb-4 bg-white rounded">
+        <div key={identifier} className="flex mb-4 bg-white rounded" id={identifier}>
             <div className="flex-shrink-0 w-10 py-3 text-center bg-gray-200 rounded-l">
             {/* Upvote */}
             <div className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-blue-600" onClick ={()=> vote(1)}>
@@ -50,17 +55,21 @@ export default function PostCard({post:{identifier, slug, title, body, subname, 
             </div>
             <div className="w-full p-2 text-black">
             <div className="flex items-center">
-                <Link href={`/r/${subname}`}>
-                    <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
-                    className="w-6 h-6 mr-1 rounded-full cursor-pointer"/>
-                </Link>
-                <Link href={`/r/${subname}`}>
-                    <a className="text-xs font-bold cursor-pointer hover:underline">
-                        /r/{subname}
-                    </a>
-                </Link>
+                {!isInSubPage && (
+                <>
+                    <Link href={`/r/${subname}`}>
+                        <img src={sub.imageUrl}
+                        className="w-6 h-6 mr-1 rounded-full cursor-pointer"/>
+                    </Link>
+                    <Link href={`/r/${subname}`}>
+                        <a className="text-xs font-bold cursor-pointer hover:underline">
+                            /r/{subname}
+                        </a>
+                    </Link>
+                    <span className="mx-1 text-xs text-gray-500">•</span> 
+                </>
+                )}
                 <p className="text-xs text-gray-500">
-                <span className="mx-1">•</span> 
                 Posted by 
                 <Link href={`/u/${username}`}>
                     <a className="mx-1 hover:underline">/u/{username}</a>

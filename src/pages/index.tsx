@@ -1,10 +1,10 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import useSWR from 'swr'
+import useSWR, { useSWRInfinite } from 'swr'
 
 import {Post, Sub} from '../types'
 import PostCard from '../components/PostCard'
@@ -13,21 +13,59 @@ import { useAuthState } from '../context/auth'
 dayjs.extend(relativeTime)
 
 export default function Home() {
-  const {data:posts} = useSWR<Post[]>('/posts')
+  const [observedPost,setObserveredPost ] = useState('')
+  // const {data: posts} = useSWR<Post[]>('/posts')
   const {data: topSubs} = useSWR<Sub[]>('/misc/top-subs')
   const {authenticated} = useAuthState()
+  const description = "Reddit is a network of communities based on people's interests. Find Communities you're interested in, and become part of an online community!"
+  const title = "Readit: The front page of the internet"
+  const{data, error, mutate, size:page, setSize:setPage, isValidating, revalidate} = useSWRInfinite<Post[]>(
+    index => `/posts?page=${index}`
+  )
+
+  const posts: Post[] = data ? [].concat(...data) : []
+  const isLoading = !data && !error
+
+  useEffect(()=>{
+    if(!posts || posts.length === 0)return
+    const id = posts[posts.length - 1].identifier
+    if(id !== observedPost){
+      setObserveredPost(id)
+      observeElement(document.getElementById(id))
+    }
+  },[posts])
+
+  const observeElement =(element:HTMLElement) => {
+    if(!element)return
+
+    const observer = new IntersectionObserver((entries)=>{
+      if(entries[0].isIntersecting === true){
+        console.log('Reached bottom of post')
+        setPage(page+1)
+        observer.unobserve(element)
+      }
+    }, {threshold: 1})
+    observer.observe(element )
+  }
 
   return (
     <Fragment>
       <Head>  
-        <title>Readit: The front page of the internet</title> 
+        <title>{title}</title> 
+        <meta name="description" content={description}/>
+        <meta property="og:description" content={description}/>
+        <meta property="og:title" content={title}/>
+        <meta property="twitter:description" content={description}/>
+        <meta property="twitter:title" content={title}/>
       </Head>
       <div className="container flex pt-4">
         {/* Post Feed */}
         <div className="w-full px-4 md:w-160 md:p-0">
+          {isLoading && <p className = "text-lg text-center">Loading</p>}
           {posts?.map((post) => (
-            <PostCard post={post} key={post.identifier}/>
+            <PostCard post={post} key={post.identifier} revalidate={revalidate}/>
           ))}
+          {isValidating && posts.length > 0  && (<p className = "text-lg text-center">Loading</p>)}
         </div> 
         {/* Side Bar */}
         <div className="hidden ml-6 md:block w-80">
